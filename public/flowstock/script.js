@@ -246,8 +246,9 @@ function raiseShortageDecision(o, it, p, given, short) {
     detail: `${it.sku} — ${o.customer} requires ${it.qty}, only ${given} available at allocation time.`,
   });
 
+  const zero = given === 0;
   const options = [
-    `Partial-ship ${given} now, backorder ${short} (chosen)`,
+    zero ? `Queue ${short} units for the next replenishment wave (chosen)` : `Partial-ship ${given} now, backorder ${short} (chosen)`,
     lower.length ? `Reallocate ${short} from lower-priority orders (${lower.map((x) => x.id).join(", ")})` : "Hold entire order until replenishment",
     "Cancel line item and refund customer",
   ];
@@ -256,11 +257,15 @@ function raiseShortageDecision(o, it, p, given, short) {
     title: `Shortage on ${it.sku} for ${o.id}`,
     context: `${o.priority} priority order · SLA ${o.slaHours}h · requested ${it.qty} units · available ${given}`,
     options,
-    chosen: `Allocate ${given} units to ${o.id} now, mark ${short} units as backordered`,
+    chosen: zero
+      ? `No sellable stock left — backorder all ${short} units of ${it.sku} and raise an expedited replenishment PO`
+      : `Allocate ${given} units to ${o.id} now, mark ${short} units as backordered`,
     why:
       `${o.id} scores ${Math.round(scoreOrder(o))} on the priority index (${o.priority} weight ${PRIORITY_WEIGHT[o.priority]}, ` +
-      `SLA ${o.slaHours}h, order value $${orderValue(o).toFixed(0)}). Partial shipment protects ${Math.round((given / it.qty) * 100)}% ` +
-      `of the line immediately and keeps the SLA clock alive, while a full hold would breach it for 100% of units. ` +
+      `SLA ${o.slaHours}h, order value $${orderValue(o).toFixed(0)}). ` +
+      (zero
+        ? `Every sellable unit of ${it.sku} was already committed to higher-scoring orders, so nothing can ship on this line today without stealing stock from an order that is closer to its SLA. Backordering with an expedited PO is the only option that does not create a second breach. `
+        : `Partial shipment protects ${Math.round((given / it.qty) * 100)}% of the line immediately and keeps the SLA clock alive, while a full hold would breach it for 100% of units. `) +
       (lower.length
         ? `Reallocation from ${lower.map((x) => x.id).join(", ")} was rejected because it converts one late order into ${lower.length} late orders with no net SLA gain.`
         : `No lower-priority holder of ${it.sku} exists, so reallocation is not available.`) +
