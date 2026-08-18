@@ -453,10 +453,13 @@ function runCrisis() {
   const steps = [];
 
   steps.push(() => {
+    resetState(true);
     go("dashboard");
     toast("info", "<b>Crisis simulation started</b><br>Emergency medical order inbound.");
     const p = product("SKU-1009");
-    p.stock = 7 + p.reserved + p.damaged; // only 7 sellable
+    p.reserved = 0; p.damaged = 0; p.stock = 7; // only 7 sellable
+    const p2 = product("SKU-1015");
+    p2.reserved = 0; p2.damaged = 0; p2.stock = 60;
     const o = {
       id: "ORD-9001", customer: "St. Marien Emergency Hospital", priority: "Critical", slaHours: 2,
       status: "New",
@@ -478,8 +481,7 @@ function runCrisis() {
   });
 
   steps.push(() => {
-    const d = state.decisions.find((x) => x.orderId === "ORD-9001" && x.kind === "shortage");
-    if (d) applyDecision(d.id);
+    state.decisions.filter((x) => x.orderId === "ORD-9001" && x.status !== "Applied").forEach((d) => applyDecision(d.id));
   });
 
   steps.push(() => { advance("ORD-9001"); go("picking"); });
