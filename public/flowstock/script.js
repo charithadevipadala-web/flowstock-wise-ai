@@ -291,7 +291,7 @@ function reportDamage(orderId, sku, qty) {
   const o = order(orderId), p = product(sku);
   if (!o || !p) return;
   const line = o.items.find((i) => i.sku === sku);
-  qty = Math.min(qty, line ? line.allocated : qty);
+  qty = Math.max(1, line && line.allocated > 0 ? Math.min(qty, line.allocated) : Math.min(qty, p.stock));
   p.damaged += qty;
   p.stock = Math.max(0, p.stock - qty);
   p.reserved = Math.max(0, p.reserved - qty);
