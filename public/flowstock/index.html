@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FlowStock AI — Warehouse Control Center</title>
+<meta name="description" content="FlowStock AI: smart warehouse operations, allocation engine, exception handling and fulfillment control center." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">FS</div>
+      <div>
+        <h1>FlowStock<span>AI</span></h1>
+        <p>Warehouse Control Center</p>
+      </div>
+    </div>
+    <nav class="nav" id="nav">
+      <button class="nav-item active" data-view="dashboard"><span class="ico">◉</span>Dashboard</button>
+      <button class="nav-item" data-view="inventory"><span class="ico">▤</span>Inventory</button>
+      <button class="nav-item" data-view="orders"><span class="ico">✇</span>Orders</button>
+      <button class="nav-item" data-view="allocation"><span class="ico">⚖</span>Allocation</button>
+      <button class="nav-item" data-view="picking"><span class="ico">➤</span>Picking</button>
+      <button class="nav-item" data-view="packing"><span class="ico">▣</span>Packing</button>
+      <button class="nav-item" data-view="exceptions"><span class="ico">⚠</span>Exceptions<span class="pill" id="navExcCount">0</span></button>
+      <button class="nav-item" data-view="decisions"><span class="ico">✦</span>Decisions</button>
+      <button class="nav-item" data-view="analytics"><span class="ico">◧</span>Analytics</button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="health">
+        <div class="health-row"><span>Fulfillment health</span><strong id="healthVal">—</strong></div>
+        <div class="bar"><div class="bar-fill" id="healthBar"></div></div>
+      </div>
+      <button class="btn btn-danger w-full" id="crisisBtn">⚡ Run Warehouse Crisis</button>
+      <button class="btn btn-ghost w-full" id="resetBtn">↺ Reset Demo Data</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn only-mobile" id="menuBtn">☰</button>
+      <div>
+        <h2 id="viewTitle">Dashboard</h2>
+        <p id="viewSub">Live operations overview</p>
+      </div>
+      <div class="topbar-right">
+        <div class="clock"><span class="dot live"></span><span id="clock">--:--:--</span></div>
+        <button class="btn btn-primary" id="autoBtn">▶ Auto-Run Fulfillment</button>
+      </div>
+    </header>
+
+    <section class="view" id="view-dashboard"></section>
+    <section class="view hidden" id="view-inventory"></section>
+    <section class="view hidden" id="view-orders"></section>
+    <section class="view hidden" id="view-allocation"></section>
+    <section class="view hidden" id="view-picking"></section>
+    <section class="view hidden" id="view-packing"></section>
+    <section class="view hidden" id="view-exceptions"></section>
+    <section class="view hidden" id="view-decisions"></section>
+    <section class="view hidden" id="view-analytics"></section>
+  </main>
+</div>
+
+<div class="modal-backdrop hidden" id="modalBackdrop">
+  <div class="modal glass" id="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Title</h3>
+      <button class="icon-btn" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<script src="./script.js"></script>
+</body>
+</html>
