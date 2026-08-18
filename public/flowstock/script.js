@@ -494,8 +494,7 @@ function runCrisis() {
 
   steps.push(() => {
     go("decisions");
-    const d = state.decisions.find((x) => x.orderId === "ORD-9001" && x.title.startsWith("Damaged"));
-    if (d) applyDecision(d.id);
+    state.decisions.filter((x) => x.orderId === "ORD-9001" && x.status !== "Applied").forEach((d) => applyDecision(d.id));
   });
 
   steps.push(() => { go("packing"); advance("ORD-9001"); });
